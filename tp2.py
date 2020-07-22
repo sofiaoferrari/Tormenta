@@ -191,3 +191,32 @@ def identificar_tormentas(detectados,provincia):
             tormenta_actual = "Tormenta fuerte con posibilidad de granizo"
             alerta = "ALERTA!"
     print("\n",provincia+":",tormenta_actual+".",alerta)
+
+def analisis_radar(x,y,provincia,ruta_imagen):
+    """
+    Precondicion: se reciben 4 parámetros, provincia de tipo string que expresa la provincia a analizar,
+                x e y de tipo int que expresan las coordenadas de la provincia y ruta_imagen de tipo string 
+                que expresa la ubicación de la imagen dentro de la computadora. Se analiza cada pixel de la 
+                provincia identificando el color de cada uno de ellos y agrupandolos en los diferentes tipos de tormenta
+    """
+    imagen_radar = Image.open(ruta_imagen).convert('RGB')
+    sin_alerta_proxima = [0,(34,34,34)]
+    tormenta_debil = [0,(51,170,221),(34, 170, 204),(34,153,204),(51,136,187),(51,119,170),(68,102,153),(68,85,136),(51,85,119),(51,68,102)] # azules inferiores
+    tormenta_moderada = [0,(85,238,51),(85,221,51),(68,204,51),(68,187,51),(51,170,34),(51,136,34),(34,119,17),(238,238,68),(221,221,51),(204,204,51),(204,170,34)] # verdes y amarillos
+    tormenta_fuerte = [0,(204,153,34),(221,136,17),(153,102,34),(170,0,17),(204,0,17),(221,51,34),(221,102,34),(153,0,0),(170,34,34),(238,17,51)] # rojos y naranjas
+    posibilidad_granizo = [0,(153,221,204),(136,221,187),(204,0,204),(238,0,238),(221,0,153),(170,0,187),(153,0,153),(204,0,153),(221,0,204),(187,0,102)] # magenta y azules superiores
+    for j in range(y,y+181):
+        for i in range(x,x+181):
+            coordenada = i,j
+            if imagen_radar.getpixel(coordenada) in sin_alerta_proxima:
+                sin_alerta_proxima[0] += 1
+            if imagen_radar.getpixel(coordenada) in tormenta_debil:
+                tormenta_debil[0] += 1
+            if imagen_radar.getpixel(coordenada) in tormenta_moderada:
+                tormenta_moderada[0] += 1
+            if imagen_radar.getpixel(coordenada) in tormenta_fuerte:
+                tormenta_fuerte[0] += 1
+            if imagen_radar.getpixel(coordenada) in posibilidad_granizo:
+                posibilidad_granizo[0] += 1
+    detectados = [sin_alerta_proxima[0],tormenta_debil[0],tormenta_moderada[0],tormenta_fuerte[0],posibilidad_granizo[0]]
+    identificar_tormentas(detectados,provincia)
