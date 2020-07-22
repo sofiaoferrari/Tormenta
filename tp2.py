@@ -220,3 +220,26 @@ def analisis_radar(x,y,provincia,ruta_imagen):
                 posibilidad_granizo[0] += 1
     detectados = [sin_alerta_proxima[0],tormenta_debil[0],tormenta_moderada[0],tormenta_fuerte[0],posibilidad_granizo[0]]
     identificar_tormentas(detectados,provincia)
+
+def datos_radar():
+    """
+    Le pide al usuario la ruta de la imagen, y si esta es valida,
+    entra en la función de analisis_radar.
+    """
+    bahia_blanca = [336, 339, "Bahia Blanca, Buenos Aires"]
+    caba = [465, 174, "C.A.B.A"]
+    cordoba = [269,43,"Córdoba, Córdoba"]
+    mar_del_plata = [487, 311, "Mar del Plata, Buenos Aires"]
+    neuquen = [145,348,"Neuquén, Neuquén"]
+    parana = [399, 54, "Paraná, Entre Rios"]
+    pergamino = [394,141,"Pergamino, Buenos Aires"]
+    santa_rosa = [276,249,"Santa Rosa, La Pampa"]
+    provincias = [bahia_blanca,caba,cordoba,mar_del_plata,neuquen,parana,pergamino,santa_rosa]
+    print("Introduzca la ruta de la imagen que desea analizar:")
+    print("-------------(Debe ser un archivo png)-------------")
+    ruta_imagen = input()
+    if os.path.exists(ruta_imagen) and ruta_imagen.endswith(".png"):
+        for i in range(len(provincias)):
+            analisis_radar(provincias[i][0],provincias[i][1],provincias[i][2],ruta_imagen)
+    elif os.path.exists(ruta_imagen) == False:
+        print("La ruta ingresada no se encuentra en su computador.")
