@@ -243,3 +243,28 @@ def datos_radar():
             analisis_radar(provincias[i][0],provincias[i][1],provincias[i][2],ruta_imagen)
     elif os.path.exists(ruta_imagen) == False:
         print("La ruta ingresada no se encuentra en su computador.")
+
+def alertas():
+    """
+    Precondicion: imprime las alertas actuales a nivel nacional
+    """
+    url = "https://ws.smn.gob.ar/alerts/type/AL"
+    if abrir_json(url):
+        respuesta = requests.get(url)
+        datos = respuesta.json()
+        claves_necesarias = ["Titulo", "Fecha", "Hora", "\nUltima actualizacion"]
+        for diccionario in range(len(datos)):
+            print("\nAlerta:", diccionario + 1, '\n')
+            contador = 0
+            claves = ['title', 'date', 'hour', 'update']
+            for clave in datos[diccionario]:
+                if clave in claves:
+                    print(claves_necesarias[contador], ":", datos[diccionario][clave])
+                    contador += 1
+                elif clave == "zones":
+                    texto_editado = edicion_descripcion(datos[diccionario-1]['description'])
+                    print("Descripcion", ":\n", texto_editado)
+                elif clave == "description":
+                    print("\nZonas: ")
+                    for subclave in datos[diccionario]['zones']:
+                        print("", int(subclave) + 1, ":", datos[diccionario]['zones'][subclave])
