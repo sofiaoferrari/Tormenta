@@ -268,3 +268,23 @@ def alertas():
                     print("\nZonas: ")
                     for subclave in datos[diccionario]['zones']:
                         print("", int(subclave) + 1, ":", datos[diccionario]['zones'][subclave])
+
+def alertas_local(provincia):
+    """
+    Precondición: Recibe como parametro una provincia como str.
+    Revisa si hay alertas en la provincia actual.
+    """
+    url = "https://ws.smn.gob.ar/alerts/type/AL"
+    if abrir_json(url):
+        respuesta = requests.get(url)
+        datos = respuesta.json()
+        contador_alertas = 0
+        print("\nLista de alertas en la provincia", provincia, ":")
+        for i in range(len(datos)):
+            if provincia in str(datos[i]["zones"]):
+                contador_alertas += 1
+                print("\nAlerta",contador_alertas)
+                print("\n",datos[i]["title"])
+                print(edicion_descripcion(datos[i]["description"]))
+        if contador_alertas == 0:
+            print(f"\nNo hay ninguna alerta para {provincia} en este momento.")
