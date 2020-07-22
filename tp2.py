@@ -8,7 +8,7 @@ import os
 
 def edicion_descripcion(descripcion):
     '''
-    Precondicion: Recibe la descripcion como un string y lo modifica para
+    Precondicion: Recibe la descripcion como un string y la fragmenta cada 120 caracteres por linea.
     Postcondicion: Retorna el texto modificado, como string.
     '''
     texto = list(descripcion)
