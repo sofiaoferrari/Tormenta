@@ -149,7 +149,7 @@ def historico_temperatura_humedad():
     muestra las opciones de los distintos datos del csv.
     """
     continuar = "si"
-    ruta = input("Introduzca la ruta del archivo CSV en su computador: ") #C:/Users/nanim/Downloads/weatherdata--389-603_edd.csv
+    ruta = input("Introduzca la ruta del archivo CSV en su computador: ")
     while os.path.exists(ruta) and ruta.endswith(".csv") and continuar == "si":
         print("\nHistórico de temperatura y humedad de Argetina.\n")
         print("1)   Gráfico con el promedio de temperaturas anuales de los últimos 5 años.")
@@ -311,8 +311,7 @@ def geolocalizador():
         if encontrado == False:
             print(f"No se encontró la localización para {latitud}, {longitud}.")
             print("Intente nuevamente.")
-​
-​
+
 def geolocalizador_ip():
     '''
     Precondicon: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
@@ -364,8 +363,7 @@ def mostrar_pronostico_extendido(dias):
                 pronostico_tarde = edicion_descripcion(dias["weather"][i]["afternoon_desc"])
                 print(str(dias["weather"][i]["morning_temp"])+"°C", "en la mañana.", pronostico_dia)
                 print(str(dias["weather"][i]["afternoon_temp"])+"°C", "en la tarde.", pronostico_tarde)
-​
-​
+
 def comparar_nombres(nombre_1, nombre_2):
     """
     Precondicion: recibe 2 parámetros de tipo string que expresan el nombre ingresado por el
@@ -379,7 +377,7 @@ def comparar_nombres(nombre_1, nombre_2):
     if nombre_3 == nombre_4:
         nombre_conseguido = nombre_1
     return nombre_conseguido
-​
+
 
 def volver_a_intentar():
     '''
