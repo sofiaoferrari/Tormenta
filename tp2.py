@@ -285,9 +285,13 @@ def validar_coordenada(numero):
                     contenga caracteres que no sean numeros.
     Postcondición: retorna el numero de tipo string validado.
     """
-    decimal = False
+    try:
+        prueba = float(numero)
+        decimal = True
+    except ValueError:
+        decimal = False
     while len(numero) < 3 or decimal == False:
-        print("Introduzca un número de al menos dos digitos:")
+        print("\nIntroduzca un número de al menos dos digitos:")
         print("Ejemplo: -34 o -34.2")
         numero = input()
         try:
@@ -326,7 +330,7 @@ def geolocalizador():
             print(f'\nCiudad encontrada: {localizacion["name"]} ({localizacion["lat"]}, {localizacion["lon"]})')
             alertas_local(localizacion["province"])
         elif encontrado == False:
-            print(f"No se encontró la localización para {latitud}, {longitud}.")
+            print(f"\nNo se encontró la localización para {latitud}, {longitud}.")
             print("Intente nuevamente.")
 
 def geolocalizador_ip():
