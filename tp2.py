@@ -54,15 +54,15 @@ def graficar_promedios_anuales(lista_promedios,opcion):
         etiquetas = ["Temperaturas","Promedio de temperaturas anuales de los últimos 5 años."]
     else:
         etiquetas = ["Humedad","Promedio de humedad de los últimos 5 años."]
-    años = []
+    anios = []
     lista_promedios_total = []
-    for año,datos in lista_promedios.items():
-        if int(año) >= 2015:
-            años.append(año)
-            promedio_año = lista_promedios[año][1] / lista_promedios[año][0]
-            lista_promedios_total.append(promedio_año)
+    for anio,datos in lista_promedios.items():
+        if int(anio) >= 2015:
+            anios.append(anio)
+            promedio_anio = lista_promedios[anio][1] / lista_promedios[anio][0]
+            lista_promedios_total.append(promedio_anio)
     plt.style.use("seaborn")
-    plt.bar(años,lista_promedios_total, width = 0.5, color = 'b')
+    plt.bar(anios,lista_promedios_total, width = 0.5, color = 'b')
     plt.xlabel("Años")
     plt.ylabel(etiquetas[0])
     plt.title(etiquetas[1])
@@ -76,33 +76,33 @@ def mostrar_promedio_anual(lista_promedios,opcion):
     Recibe la opción escogida como un string y la lista de promedios como un diccionario.
     """
     maximo_valor = 0
-    maximo_año = ""
+    maximo_anio = ""
     if opcion == "3":
         print("\nMilímetros máximos de lluvia de los últimos 5 años.")
         unidades = "mm"
     else:
         print("Temperatura máxima de los últimos 5 años.")
         unidades = "°C"
-    for año, datos in lista_promedios.items():
-        if int(año) >= 2015:
-            promedio_año = '%.2f' % (lista_promedios[año][1] / lista_promedios[año][0])
-            print("\n",año+":",promedio_año+unidades)
-            if float(promedio_año) > float(maximo_valor):
-                maximo_valor = promedio_año
-                maximo_año = año
-    print("\n El año",maximo_año,"tuvo el mayor valor: ",maximo_valor+unidades)
+    for anio, datos in lista_promedios.items():
+        if int(anio) >= 2015:
+            promedio_anio = '%.2f' % (lista_promedios[anio][1] / lista_promedios[anio][0])
+            print("\n",anio+":",promedio_anio+unidades)
+            if float(promedio_anio) > float(maximo_valor):
+                maximo_valor = promedio_anio
+                maximo_anio = anio
+    print("\n El año",maximo_anio,"tuvo el mayor valor: ",maximo_valor+unidades)
     continuar = input("\nPresione enter para continuar.")
 
-def guardar_promedios(promedio,año,lista_promedios):
+def guardar_promedios(promedio,anio,lista_promedios):
     """
     Precondición: Guardo los promedios por año y el contador de días en una lista dentro del diccionario.
     Recibe el promedio como un float, el año como un string, y la lista de promedios como un diccionario.
     """
-    if año not in lista_promedios.keys():
-        lista_promedios[año] = [1,promedio]
+    if anio not in lista_promedios.keys():
+        lista_promedios[anio] = [1,promedio]
     else:
-        lista_promedios[año][0] += 1
-        lista_promedios[año][1] += promedio
+        lista_promedios[anio][0] += 1
+        lista_promedios[anio][1] += promedio
 
 def cargar_datos_anuales(opcion,ruta):
     """
@@ -116,7 +116,7 @@ def cargar_datos_anuales(opcion,ruta):
             if titulo != 0: #Porque la primera linea del CSV es el encabezado.
                 linea = linea.split(",")
                 fecha = linea[0].replace('"', '')
-                año = fecha[-4::1]
+                anio = fecha[-4::1]
                 if opcion == "1":
                     max = float(linea[4].replace('"',''))
                     min = float(linea[5].replace('"',''))
@@ -127,7 +127,7 @@ def cargar_datos_anuales(opcion,ruta):
                     promedio = float(linea[6].replace('"', ''))
                 if opcion == "4":
                     promedio = float(linea[4].replace('"', ''))
-                guardar_promedios(promedio,año,lista_promedios)
+                guardar_promedios(promedio,anio,lista_promedios)
             else:
                 titulo += 1
     if opcion == "1" or opcion == "2":
