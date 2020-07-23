@@ -291,7 +291,7 @@ def validar_coordenada(numero):
         print("Ejemplo: -34 o -34.2")
         numero = input()
         try:
-            max = float(numero)
+            prueba = float(numero)
             decimal = True
         except ValueError:
             decimal = False
@@ -347,7 +347,6 @@ def geolocalizador_ip():
         respuesta = ipinfo.getHandler(clave)
         datos = respuesta.getDetails()
         provincia = datos.region
-        ciudad = datos.city
         if 'Buenos Aires' in provincia:
             provincia = 'Buenos Aires'
         alertas_local(provincia)
