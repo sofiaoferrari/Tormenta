@@ -288,3 +288,76 @@ def alertas_local(provincia):
                 print(edicion_descripcion(datos[i]["description"]))
         if contador_alertas == 0:
             print(f"\nNo hay ninguna alerta para {provincia} en este momento.")
+
+def geolocalizador():
+    '''
+    Precondicion: Le pide al usuario que ingrese las coordenadas de la ubicacion que desea ver las alertas.
+                Verifica la conexion con el web service y busca la provincia a la que pertenecen, la cual luego
+                ingresa como parametro en la funcion de alertas locales.
+    '''
+    url = 'https://ws.smn.gob.ar/map_items/forecast/'
+    latitud = input('Ingrese la latitud:')
+    longitud = input('Ingrese la longitud:')
+    if abrir_json(url):
+        respuesta = requests.get(url)
+        dias = respuesta.json()
+        encontrado = False
+        for i in range(len(dias)):
+            if dias[i]["lat"].startswith(latitud) and dias[i]["lon"].startswith(longitud):
+                encontrado = True
+                localizacion = dias[i]
+                print(localizacion["name"]+".",localizacion["lat"],":",localizacion["lon"])
+                alertas_local(localizacion["province"])
+        if encontrado == False:
+            print(f"No se encontró la localización para {latitud}, {longitud}.")
+            print("Intente nuevamente.")
+​
+​
+def geolocalizador_ip():
+    pass
+​
+​
+def menu_alertas():
+    pass
+​
+​
+def mostrar_pronostico_extendido(dias):
+    pass
+​
+​
+def comparar_nombres(nombre_1, nombre_2):
+    """
+    Precondicion: recibe 2 parámetros de tipo string que expresan el nombre ingresado por el
+                usuario y el nombre en el json, a ambos se les quitan los tildes y se compara su igualdad
+    Postcondicion: retorna el nombre que se encuentra dentro del diccionario si ambos nombres son iguales, 
+                de no ser así retorna un "No"
+    """
+    nombre_conseguido = 'No'
+    nombre_3 = nombre_1.lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+    nombre_4 = nombre_2.lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+    if nombre_3 == nombre_4:
+        nombre_conseguido = nombre_1
+    return nombre_conseguido
+​
+​
+def volver_a_intentar():
+    pass
+​
+
+def pronostico_extendido():
+    pass
+​
+​
+def volver_o_salir():
+    pass
+​
+​
+def titulo():
+    pass
+​
+​
+def main():
+    pass
+​
+
+main()
