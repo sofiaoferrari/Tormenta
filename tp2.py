@@ -279,6 +279,17 @@ def alertas_local(provincia):
         if contador_alertas == 0:
             print(f"\nNo hay ninguna alerta para {provincia} en este momento.")
 
+def validar_coordenada(numero):
+    """
+    Precondición: recibe 1 parámetro de tipo string y verifica que contenga al menos 3 caracteres.
+    Postcondición: retorna el numero de tipo string validado.
+    """
+    while len(numero) < 3:
+        print("Introduzca un número de al menos dos digitos:")
+        print("Ejemplo: -34 o -34.2")
+        numero = input()
+    return numero
+
 def geolocalizador():
     '''
     Precondicion: Le pide al usuario que ingrese las coordenadas de la ubicacion que desea ver las alertas.
@@ -287,7 +298,9 @@ def geolocalizador():
     '''
     url = 'https://ws.smn.gob.ar/map_items/forecast/'
     latitud = input('Ingrese la latitud:')
+    latitud = validar_coordenada(latitud)
     longitud = input('Ingrese la longitud:')
+    longitud = validar_coordenada(longitud)
     if abrir_json(url):
         respuesta = requests.get(url)
         dias = respuesta.json()
@@ -304,7 +317,7 @@ def geolocalizador():
 
 def geolocalizador_ip():
     '''
-    Precondicon: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
+    Precondicion: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
                 locales ingresandole como parametro la provincia de la geolocalizacion actual
     '''
     clave = '3b7428ff5f2a34'
