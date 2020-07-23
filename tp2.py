@@ -314,15 +314,56 @@ def geolocalizador():
 ​
 ​
 def geolocalizador_ip():
-    pass
-​
-​
+    '''
+    Precondicon: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
+                locales ingresandole como parametro la provincia de la geolocalizacion actual
+    '''
+    clave = '3b7428ff5f2a34'
+    try:
+        respuesta = ipinfo.getHandler(clave)
+        acceso = True
+    except Exception:
+        print('\nHubo un error para obtener la ubicacion actual.')
+        acceso = False
+    if acceso:
+        respuesta = ipinfo.getHandler(clave)
+        datos = respuesta.getDetails()
+        provincia = datos.region
+        if 'Buenos Aires' in provincia:
+            provincia = 'Buenos Aires'
+        alertas_local(provincia)
+
+
 def menu_alertas():
-    pass
-​
-​
+    print('\n[1] Alertas a Nivel Nacional\n[2] Alertas en mi geolocalizacion actual')
+    print('[3] Ingresar coordenadas')
+    opcion = input('\nIngrese la opcion que desee realizar (1-3): ')
+    while opcion not in ['1', '2','3']:
+        opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-3): ')
+    if opcion == '1':
+        alertas()
+    elif opcion == '2':
+        geolocalizador_ip()
+    elif opcion == '3':
+        geolocalizador()
+
+
 def mostrar_pronostico_extendido(dias):
-    pass
+    '''
+    Precondicion: Muestra el pronostico extendido para la ciudad pedida por el usuario.
+                Recibe el json de pronosticos como un diccionario.
+    '''
+    print('')
+    for key, value in dias.items():
+        if key == "name":
+            print("Ciudad:", dias['name'])
+            print("Provincia:", dias['province'])
+            for i in range(1,4):
+                print("\nDía", str(dias["weather"][i]["day"])+":")
+                pronostico_dia = edicion_descripcion(dias["weather"][i]["morning_desc"])
+                pronostico_tarde = edicion_descripcion(dias["weather"][i]["afternoon_desc"])
+                print(str(dias["weather"][i]["morning_temp"])+"°C", "en la mañana.", pronostico_dia)
+                print(str(dias["weather"][i]["afternoon_temp"])+"°C", "en la tarde.", pronostico_tarde)
 ​
 ​
 def comparar_nombres(nombre_1, nombre_2):
@@ -339,25 +380,111 @@ def comparar_nombres(nombre_1, nombre_2):
         nombre_conseguido = nombre_1
     return nombre_conseguido
 ​
-​
+
 def volver_a_intentar():
-    pass
-​
+    '''
+    Postcondicion: Le permite al usuario volver a buscar el pronostico extendido
+                    para la ciudad que desee.
+    Precondicion: Retorna un booleano.
+    '''
+    intentar = False
+    decision = input('\nDesea volver a intentar con otra ciudad? (Si/No): ').lower().replace("í", "i")
+    opciones = ['si', 'no', 's', 'n']
+    while decision not in opciones:
+        decision = input('Opcion no valida! Vuelva a ingresar. (Si/No): ').lower().replace("í", "i")
+    if decision in ['si', 's']:
+        intentar = True
+    elif decision in ['no', 'n']:
+        intentar = False
+    return intentar
 
 def pronostico_extendido():
-    pass
-​
-​
+    '''
+    Precondicion: Le pide al usuario que ingrese la ubicacion de la que desea saber su pronostico
+                extendido. Confirma el acceso al web service y verifica que haya pronostico
+                para la ubicacion ingresada, llamando a una funcion.
+    '''
+    url = 'https://ws.smn.gob.ar/map_items/forecast/'
+    corriendo = True
+    while corriendo is True:
+        ciudad_elegida = input("Ingrese el nombre de la ciudad que desea ver su pronostico extendido: ").title()
+        provincia_elegida = input("Ingrese la provincia en la que se encuentra la ciudad: ").title()
+        existe_ciudad_y_provincia = False
+        conexion = abrir_json(url)
+        if conexion is True:
+            datos = url
+            respuesta = requests.get(datos)
+            pronosticos = respuesta.json()
+            for j in range(len(pronosticos)):
+                ciudad = comparar_nombres(pronosticos[j]['name'], ciudad_elegida)
+                provincia = comparar_nombres(pronosticos[j]['province'], provincia_elegida)
+                if ciudad == pronosticos[j]['name'] and provincia == pronosticos[j]['province']:
+                    existe_ciudad_y_provincia = True
+                    mostrar_pronostico_extendido(pronosticos[j])
+                    provincia_encontrada = pronosticos[j]['province']
+        if existe_ciudad_y_provincia is False and conexion is True:
+            print(f'\nLo sentimos! No se encontraron resultados para {ciudad_elegida}, {provincia_elegida}.')
+        elif existe_ciudad_y_provincia is True and conexion is True:
+            alertas_local(provincia_encontrada)
+        corriendo = volver_a_intentar()
+
+
 def volver_o_salir():
-    pass
-​
-​
+    '''
+    Precondicion: Le permite al usuario elegir si desea volver al menu o salir.
+    Postcondicion: Retorna un booleano.
+    '''
+    volver = False
+    print('\n[1] Volver a Menu del Clima\n[2] Salir')
+    eleccion = input('Ingrese la opcion que desee (1,2): ')
+    while eleccion not in ['1', '2']:
+        eleccion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1,2): ')
+    if eleccion == '1':
+        volver = True
+    elif eleccion == '2':
+        volver = False
+    return volver
+
+
 def titulo():
-    pass
-​
-​
+    print(" _____                               _        ")
+    print("|_   _|                             | |       ")
+    print("  | | ___  _ __ _ __ ___   ___ _ __ | |_ __ _ ")
+    print("  | |/ _ \| '__| '_ ` _ \ / _ \ '_ \| __/ _` |")
+    print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
+    print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
+
+
 def main():
-    pass
-​
+    titulo()
+    programa_corriendo = True
+    while programa_corriendo is True:
+        print('\nM E N U  D E L  C L I M A')
+        aleratas = '[1] ALERTAS!'
+        print(f'\n\033[31m{aleratas}\033[0m\n[2] Pronostico Extendido\n[3] Analisis de Imagen Radar')
+        print('[4] Historico de temperaturas y humedad de Argentina\n[5] Salir')
+        opcion = input('\nIngrese el numero de la opcion que desee (1-5): ')
+        while opcion not in ['1', '2', '3', '4', '5']:
+            opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-5): ')
+        print('')
+        if opcion == '1':
+            aleratas = 'A L E R T A S !'
+            print(f'\n\033[31m{aleratas}\033[0m')
+            menu_alertas()
+        elif opcion == '2':
+            print('\nP R O N O S T I C O    E X T E N D I D O\n')
+            pronostico_extendido()
+            programa_corriendo = volver_o_salir()
+        elif opcion == '3':
+            print('\nA N A L I S I S   R A D A R\n')
+            datos_radar()
+            programa_corriendo = volver_o_salir()
+        elif opcion == '4':
+            print('\nP R O M E D I O S\n')
+            historico_temperatura_humedad()
+            programa_corriendo = volver_o_salir()
+        elif opcion == '5':
+            programa_corriendo = False
+
 
 main()
