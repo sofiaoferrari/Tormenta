@@ -1,14 +1,13 @@
 import requests
 import matplotlib.pyplot as plt
-#import csv
 from PIL import Image
 import ipinfo
 import os
 
 def edicion_descripcion(descripcion):
     '''
-    Precondicion: Recibe la descripcion como un string y la fragmenta cada 120 caracteres por linea.
-    Postcondicion: Retorna el texto modificado, como string.
+    Precondición: Recibe la descripción como un string y la fragmenta cada 120 caracteres por linea.
+    Postcondición: Retorna el texto modificado, como string.
     '''
     texto = list(descripcion)
     for i in range(120, len(descripcion), 120):
@@ -72,10 +71,9 @@ def graficar_promedios_anuales(lista_promedios,opcion):
 
 def mostrar_promedio_anual(lista_promedios,opcion):
     """
-    Precondición:Muestra los datos de la opción escogida
-    y muestra por pantalla el año y el promedio de ese año.
-    Recibe la opción escogida como un str
-    y la lista de promedios como un diccionario.
+    Precondición:Muestra los datos de la opción escogida y muestra por pantalla el año y
+    el promedio de ese año.
+    Recibe la opción escogida como un string y la lista de promedios como un diccionario.
     """
     maximo_valor = 0
     maximo_anio = ""
@@ -97,10 +95,8 @@ def mostrar_promedio_anual(lista_promedios,opcion):
 
 def guardar_promedios(promedio,anio,lista_promedios):
     """
-    Precondición: Guardo los promedios por año y el contador
-    de días en una lista dentro del diccionario.
-    El promedio como un float, el año como un string,
-    y la lista de promedios como un diccionario.
+    Precondición: Guardo los promedios por año y el contador de días en una lista dentro del diccionario.
+    Recibe el promedio como un float, el año como un string, y la lista de promedios como un diccionario.
     """
     if anio not in lista_promedios.keys():
         lista_promedios[anio] = [1,promedio]
@@ -110,10 +106,8 @@ def guardar_promedios(promedio,anio,lista_promedios):
 
 def cargar_datos_anuales(opcion,ruta):
     """
-    Precondición: Lee el archivo csv, guarda los datos, y dependiendo
-    de la opción llama a una función o a otra.
-    Recibe la ruta del archivo csv como un str
-    y la opción como un str.
+    Precondición: Lee el archivo csv, guarda los datos, y dependiendo de la opción llama a una función o a otra.
+    Recibe la ruta del archivo csv como un str y la opción como un str.
     """
     lista_promedios = {}
     titulo = 0
@@ -143,8 +137,8 @@ def cargar_datos_anuales(opcion,ruta):
 
 def historico_temperatura_humedad():
     """
-    Le pide al usuario la ruta del archivo csv, y si esta es valida,
-    muestra las opciones de los distintos datos del csv.
+    Precondición: Le pide al usuario la ruta del archivo csv, y si esta es valida, muestra las
+    opciones de los distintos datos del csv.
     """
     continuar = "si"
     ruta = input("Introduzca la ruta del archivo CSV en su computador: ")
@@ -169,10 +163,9 @@ def historico_temperatura_humedad():
 
 def identificar_tormentas(detectados,provincia):
     """
-    Precondición: Recibe como parametro una lista con la cantidad de
-    pixeles de cada tipo de tormenta, y una provincia como un str.
-    Cuenta la cantidad de pixeles de cada tipo de tormenta
-    y determina que clase de tormenta hay.
+    Precondición: Recibe como parametro una lista con la cantidad de pixeles de cada tipo de tormenta,
+    y una provincia como un str.
+    Cuenta la cantidad de pixeles de cada tipo de tormenta y determina que clase de tormenta hay.
     """
     alerta = ""
     if (detectados[0]//6) > (detectados[1]+detectados[2]+detectados[3]+detectados[4]):
@@ -221,8 +214,7 @@ def analisis_radar(x,y,provincia,ruta_imagen):
 
 def datos_radar():
     """
-    Le pide al usuario la ruta de la imagen, y si esta es valida,
-    entra en la función de analisis_radar.
+    Precondición: Le pide al usuario la ruta de la imagen, y si esta es valida, entra en la función de analisis_radar.
     """
     bahia_blanca = [336, 339, "Bahia Blanca, Buenos Aires"]
     caba = [465, 174, "C.A.B.A"]
@@ -244,13 +236,13 @@ def datos_radar():
 
 def alertas():
     """
-    Precondicion: imprime las alertas actuales a nivel nacional
+    Precondición: imprime las alertas actuales a nivel nacional.
     """
     url = "https://ws.smn.gob.ar/alerts/type/AL"
     if abrir_json(url):
         respuesta = requests.get(url)
         datos = respuesta.json()
-        claves_necesarias = ["Titulo", "Fecha", "Hora", "\nUltima actualizacion"]
+        claves_necesarias = ["Titulo", "Fecha", "Hora", "\nPróxima actualización"]
         for diccionario in range(len(datos)):
             print("\nAlerta:", diccionario + 1, '\n')
             contador = 0
@@ -269,7 +261,7 @@ def alertas():
 
 def alertas_local(provincia):
     """
-    Precondición: Recibe como parametro una provincia como str.
+    Precondición: Recibe como parametro una provincia como string.
     Revisa si hay alertas en la provincia actual.
     """
     url = "https://ws.smn.gob.ar/alerts/type/AL"
