@@ -281,13 +281,20 @@ def alertas_local(provincia):
 
 def validar_coordenada(numero):
     """
-    Precondición: recibe 1 parámetro de tipo string y verifica que contenga al menos 3 caracteres.
+    Precondición: recibe 1 parámetro de tipo string y verifica que contenga al menos 3 caracteres y que no
+                    contenga caracteres que no sean numeros.
     Postcondición: retorna el numero de tipo string validado.
     """
-    while len(numero) < 3:
+    decimal = False
+    while len(numero) < 3 or decimal == False:
         print("Introduzca un número de al menos dos digitos:")
         print("Ejemplo: -34 o -34.2")
         numero = input()
+        try:
+            prueba = float(numero)
+            decimal = True
+        except ValueError:
+            decimal = False
     return numero
 
 def geolocalizador():
@@ -297,21 +304,28 @@ def geolocalizador():
                 ingresa como parametro en la funcion de alertas locales.
     '''
     url = 'https://ws.smn.gob.ar/map_items/forecast/'
-    latitud = input('Ingrese la latitud:')
+    latitud = input('Ingrese la latitud: ')
     latitud = validar_coordenada(latitud)
-    longitud = input('Ingrese la longitud:')
+    longitud = input('Ingrese la longitud: ')
     longitud = validar_coordenada(longitud)
+    encontrado = False
+    max_lat = 1
+    max_lon = 1
     if abrir_json(url):
         respuesta = requests.get(url)
-        dias = respuesta.json()
-        encontrado = False
-        for i in range(len(dias)):
-            if dias[i]["lat"].startswith(latitud) and dias[i]["lon"].startswith(longitud):
+        datos = respuesta.json()
+        for i in range(len(datos)):
+            aprox_latitud = abs(float((datos[i]["lat"]).replace("-", "")) - float(latitud.replace("-", "")))
+            aprox_longitud = abs(float((datos[i]["lon"]).replace("-", "")) - float(longitud.replace("-", "")))
+            if aprox_latitud < max_lat and aprox_longitud < max_lon:
+                max_lat = aprox_latitud
+                max_lon = aprox_longitud
+                localizacion = datos[i]
                 encontrado = True
-                localizacion = dias[i]
-                print(localizacion["name"]+".",localizacion["lat"],":",localizacion["lon"])
-                alertas_local(localizacion["province"])
-        if encontrado == False:
+        if encontrado == True:
+            print(f'\nCiudad encontrada: {localizacion["name"]} ({localizacion["lat"]}, {localizacion["lon"]})')
+            alertas_local(localizacion["province"])
+        elif encontrado == False:
             print(f"No se encontró la localización para {latitud}, {longitud}.")
             print("Intente nuevamente.")
 
