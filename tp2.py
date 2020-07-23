@@ -5,7 +5,6 @@ from PIL import Image
 import ipinfo
 import os
 
-
 def edicion_descripcion(descripcion):
     '''
     Precondicion: Recibe la descripcion como un string y la fragmenta cada 120 caracteres por linea.
@@ -19,7 +18,6 @@ def edicion_descripcion(descripcion):
         texto.insert(i+1, '\n')
     texto_final = ''.join(texto)
     return texto_final
-
 
 def abrir_json(url):
     '''
@@ -46,7 +44,6 @@ def abrir_json(url):
         print("\nOOps: ERROR\n", err)
         funciona = False
     return funciona
-
 
 def graficar_promedios_anuales(lista_promedios,opcion):
     """
@@ -89,11 +86,12 @@ def mostrar_promedio_anual(lista_promedios,opcion):
         print("Temperatura máxima de los últimos 5 años.")
         unidades = "°C"
     for año, datos in lista_promedios.items():
-        promedio_año = '%.2f' % (lista_promedios[año][1] / lista_promedios[año][0])
-        print("\n",año+":",promedio_año+unidades)
-        if float(promedio_año) > float(maximo_valor):
-            maximo_valor = promedio_año
-            maximo_año = año
+        if int(año) >= 2015:
+            promedio_año = '%.2f' % (lista_promedios[año][1] / lista_promedios[año][0])
+            print("\n",año+":",promedio_año+unidades)
+            if float(promedio_año) > float(maximo_valor):
+                maximo_valor = promedio_año
+                maximo_año = año
     print("\n El año",maximo_año,"tuvo el mayor valor: ",maximo_valor+unidades)
     continuar = input("\nPresione enter para continuar.")
 
@@ -149,7 +147,7 @@ def historico_temperatura_humedad():
     muestra las opciones de los distintos datos del csv.
     """
     continuar = "si"
-    ruta = input("Introduzca la ruta del archivo CSV en su computador: ") #C:/Users/nanim/Downloads/weatherdata--389-603_edd.csv
+    ruta = input("Introduzca la ruta del archivo CSV en su computador: ")
     while os.path.exists(ruta) and ruta.endswith(".csv") and continuar == "si":
         print("\nHistórico de temperatura y humedad de Argetina.\n")
         print("1)   Gráfico con el promedio de temperaturas anuales de los últimos 5 años.")
@@ -311,8 +309,7 @@ def geolocalizador():
         if encontrado == False:
             print(f"No se encontró la localización para {latitud}, {longitud}.")
             print("Intente nuevamente.")
-​
-​
+
 def geolocalizador_ip():
     '''
     Precondicon: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
@@ -321,9 +318,11 @@ def geolocalizador_ip():
     clave = '3b7428ff5f2a34'
     try:
         respuesta = ipinfo.getHandler(clave)
+        datos = respuesta.getDetails()
         acceso = True
     except Exception:
-        print('\nHubo un error para obtener la ubicacion actual.')
+        print('\nUPS! Hubo un error al obtener la ubicacion actual.')
+        print('Verifique su internet o vuelva a intentar mas tarde.')
         acceso = False
     if acceso:
         respuesta = ipinfo.getHandler(clave)
@@ -333,8 +332,11 @@ def geolocalizador_ip():
             provincia = 'Buenos Aires'
         alertas_local(provincia)
 
-
 def menu_alertas():
+    '''
+    Precondicion: Muestra un menu para que el usuario decida que tipo de alerta desea ver.
+                Llama a otras funciones sin parametros
+    '''
     print('\n[1] Alertas a Nivel Nacional\n[2] Alertas en mi geolocalizacion actual')
     print('[3] Ingresar coordenadas')
     opcion = input('\nIngrese la opcion que desee realizar (1-3): ')
@@ -346,7 +348,6 @@ def menu_alertas():
         geolocalizador_ip()
     elif opcion == '3':
         geolocalizador()
-
 
 def mostrar_pronostico_extendido(dias):
     '''
@@ -364,8 +365,7 @@ def mostrar_pronostico_extendido(dias):
                 pronostico_tarde = edicion_descripcion(dias["weather"][i]["afternoon_desc"])
                 print(str(dias["weather"][i]["morning_temp"])+"°C", "en la mañana.", pronostico_dia)
                 print(str(dias["weather"][i]["afternoon_temp"])+"°C", "en la tarde.", pronostico_tarde)
-​
-​
+
 def comparar_nombres(nombre_1, nombre_2):
     """
     Precondicion: recibe 2 parámetros de tipo string que expresan el nombre ingresado por el
@@ -379,13 +379,12 @@ def comparar_nombres(nombre_1, nombre_2):
     if nombre_3 == nombre_4:
         nombre_conseguido = nombre_1
     return nombre_conseguido
-​
 
 def volver_a_intentar():
     '''
-    Postcondicion: Le permite al usuario volver a buscar el pronostico extendido
+    Precondicion: Le permite al usuario volver a buscar el pronostico extendido
                     para la ciudad que desee.
-    Precondicion: Retorna un booleano.
+    Postcondicion: Retorna un booleano.
     '''
     intentar = False
     decision = input('\nDesea volver a intentar con otra ciudad? (Si/No): ').lower().replace("í", "i")
@@ -428,7 +427,6 @@ def pronostico_extendido():
             alertas_local(provincia_encontrada)
         corriendo = volver_a_intentar()
 
-
 def volver_o_salir():
     '''
     Precondicion: Le permite al usuario elegir si desea volver al menu o salir.
@@ -445,7 +443,6 @@ def volver_o_salir():
         volver = False
     return volver
 
-
 def titulo():
     print(" _____                               _        ")
     print("|_   _|                             | |       ")
@@ -454,12 +451,11 @@ def titulo():
     print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
     print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
 
-
 def main():
     titulo()
     programa_corriendo = True
     while programa_corriendo is True:
-        print('\nM E N U  D E L  C L I M A')
+        print('\n\nM E N U  D E L  C L I M A')
         aleratas = '[1] ALERTAS!'
         print(f'\n\033[31m{aleratas}\033[0m\n[2] Pronostico Extendido\n[3] Analisis de Imagen Radar')
         print('[4] Historico de temperaturas y humedad de Argentina\n[5] Salir')
@@ -471,6 +467,7 @@ def main():
             aleratas = 'A L E R T A S !'
             print(f'\n\033[31m{aleratas}\033[0m')
             menu_alertas()
+            programa_corriendo = volver_o_salir()
         elif opcion == '2':
             print('\nP R O N O S T I C O    E X T E N D I D O\n')
             pronostico_extendido()
@@ -480,7 +477,7 @@ def main():
             datos_radar()
             programa_corriendo = volver_o_salir()
         elif opcion == '4':
-            print('\nP R O M E D I O S\n')
+            print('\nR E G I S T R O S  A N U A L E S\n')
             historico_temperatura_humedad()
             programa_corriendo = volver_o_salir()
         elif opcion == '5':
