@@ -51,9 +51,9 @@ def graficar_promedios_anuales(lista_promedios,opcion):
                 lo elegido por el usuario
     """
     if opcion == "1":
-        etiquetas = ["Temperaturas (C)","Promedio de temperaturas anuales de los últimos 5 años."]
+        etiquetas = ["Temperaturas (°C)","Promedio de temperaturas anuales de los últimos 5 años."]
     else:
-        etiquetas = ["Humedad ()","Promedio de humedad de los últimos 5 años."]
+        etiquetas = ["Humedad Relativa (Fracción)","Promedio de humedad de los últimos 5 años."]
     anios = []
     lista_promedios_total = []
     for anio,datos in lista_promedios.items():
@@ -209,13 +209,13 @@ def analisis_radar(x,y,provincia,ruta_imagen):
             coordenada = i,j
             if imagen_radar.getpixel(coordenada) == NEGRO:
                 sin_alerta_proxima += 1
-            if imagen_radar.getpixel(coordenada) in AZULES_INFERIORES:
+            elif imagen_radar.getpixel(coordenada) in AZULES_INFERIORES:
                 tormenta_debil += 1
-            if imagen_radar.getpixel(coordenada) in VERDES or imagen_radar.getpixel(coordenada) in AMARILLOS:
+            elif imagen_radar.getpixel(coordenada) in VERDES or imagen_radar.getpixel(coordenada) in AMARILLOS:
                 tormenta_moderada += 1
-            if imagen_radar.getpixel(coordenada) in ROJOS or imagen_radar.getpixel(coordenada) in NARANJAS:
+            elif imagen_radar.getpixel(coordenada) in ROJOS or imagen_radar.getpixel(coordenada) in NARANJAS:
                 tormenta_fuerte += 1
-            if imagen_radar.getpixel(coordenada) in MAGENTAS or imagen_radar.getpixel(coordenada) in AZULES_SUPERIORES:
+            elif imagen_radar.getpixel(coordenada) in MAGENTAS or imagen_radar.getpixel(coordenada) in AZULES_SUPERIORES:
                 posibilidad_granizo += 1
 
     detectados = [sin_alerta_proxima,tormenta_debil,tormenta_moderada,tormenta_fuerte,posibilidad_granizo]
@@ -488,18 +488,20 @@ def titulo():
     print("  | |/ _ \| '__| '_ ` _ \ / _ \ '_ \| __/ _` |")
     print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
     print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
+    print("")
 
 def main():
-    titulo()
     programa_corriendo = True
     while programa_corriendo is True:
+        titulo()
         print('\n\nM E N U  D E L  C L I M A')
         print(f'\n[1] ALERTAS!\n[2] Pronóstico Extendido\n[3] Análisis de Imagen Radar')
         print('[4] Histórico de temperaturas y humedad de Argentina\n[5] Salir')
         opcion = input('\nIngrese el numero de la opción que desee (1-5): ')
         while opcion not in ['1', '2', '3', '4', '5']:
             opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-5): ')
-        print('')
+        os.system('cls')
+        titulo()
         if opcion == '1':
             print('A L E R T A S !')
             menu_alertas()
@@ -518,6 +520,6 @@ def main():
             programa_corriendo = volver_o_salir()
         elif opcion == '5':
             programa_corriendo = False
-
+        os.system('cls')
 
 main()
