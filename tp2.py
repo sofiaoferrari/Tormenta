@@ -4,6 +4,15 @@ from PIL import Image
 import ipinfo
 import os
 
+def titulo():
+    print(" _____                               _        ")
+    print("|_   _|                             | |       ")
+    print("  | | ___  _ __ _ __ ___   ___ _ __ | |_ __ _ ")
+    print("  | |/ _ \| '__| '_ ` _ \ / _ \ '_ \| __/ _` |")
+    print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
+    print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
+    print("")
+
 def edicion_descripcion(descripcion):
     '''
     Precondición: Recibe la descripción como un string y la fragmenta cada 120 caracteres por linea.
@@ -69,6 +78,7 @@ def graficar_promedios_anuales(lista_promedios,opcion):
     plt.tight_layout()
     plt.show()
     os.system('cls')
+    titulo()
 
 def mostrar_promedio_anual(lista_promedios,opcion):
     """
@@ -80,10 +90,10 @@ def mostrar_promedio_anual(lista_promedios,opcion):
     maximo_anio = ""
     if opcion == "3":
         print("\nMilímetros máximos de lluvia de los últimos 5 años.")
-        unidades = "mm"
+        unidades = " mm"
     else:
-        print("Temperatura máxima de los últimos 5 años.")
-        unidades = "°C"
+        print("\nTemperatura máxima de los últimos 5 años.")
+        unidades = " °C"
     for anio, datos in lista_promedios.items():
         if int(anio) >= 2015:
             promedio_anio = '%.2f' % (lista_promedios[anio][1] / lista_promedios[anio][0])
@@ -94,6 +104,7 @@ def mostrar_promedio_anual(lista_promedios,opcion):
     print("\n El año",maximo_anio,"tuvo el mayor valor: ",maximo_valor+unidades)
     continuar = input("\nPresione enter para continuar.")
     os.system('cls')
+    titulo()
 
 def guardar_promedios(promedio,anio,lista_promedios):
     """
@@ -145,7 +156,7 @@ def historico_temperatura_humedad():
     continuar = "si"
     ruta = input("Introduzca la ruta del archivo CSV en su computador: ")
     while os.path.exists(ruta) and ruta.endswith(".csv") and continuar == "si":
-        print("\nHistórico de temperatura y humedad de Argetina.\n")
+        print("\nHistórico de temperatura y humedad de Argentina.\n")
         print("1)   Gráfico con el promedio de temperaturas anuales de los últimos 5 años.")
         print("2)   Gráfico con el promedio de humedad de los últimos 5 años.")
         print("3)   Milímetros máximos de lluvia de los últimos 5 años.")
@@ -482,15 +493,6 @@ def volver_o_salir():
     elif eleccion == '2':
         volver = False
     return volver
-
-def titulo():
-    print(" _____                               _        ")
-    print("|_   _|                             | |       ")
-    print("  | | ___  _ __ _ __ ___   ___ _ __ | |_ __ _ ")
-    print("  | |/ _ \| '__| '_ ` _ \ / _ \ '_ \| __/ _` |")
-    print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
-    print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
-    print("")
 
 def main():
     programa_corriendo = True
