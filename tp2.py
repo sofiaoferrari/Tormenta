@@ -51,9 +51,9 @@ def graficar_promedios_anuales(lista_promedios,opcion):
                 lo elegido por el usuario
     """
     if opcion == "1":
-        etiquetas = ["Temperaturas","Promedio de temperaturas anuales de los últimos 5 años."]
+        etiquetas = ["Temperaturas (°C)","Promedio de temperaturas anuales de los últimos 5 años."]
     else:
-        etiquetas = ["Humedad","Promedio de humedad de los últimos 5 años."]
+        etiquetas = ["Humedad Relativa (Fracción)","Promedio de humedad de los últimos 5 años."]
     anios = []
     lista_promedios_total = []
     for anio,datos in lista_promedios.items():
@@ -121,18 +121,18 @@ def cargar_datos_anuales(opcion,ruta):
                     max = float(linea[4].replace('"',''))
                     min = float(linea[5].replace('"',''))
                     promedio = (max + min) / 2
-                if opcion == "2":
+                elif opcion == "2":
                     promedio = float(linea[8].replace('"',''))
-                if opcion == "3":
+                elif opcion == "3":
                     promedio = float(linea[6].replace('"', ''))
-                if opcion == "4":
+                elif opcion == "4":
                     promedio = float(linea[4].replace('"', ''))
                 guardar_promedios(promedio,anio,lista_promedios)
             else:
                 titulo += 1
     if opcion == "1" or opcion == "2":
         graficar_promedios_anuales(lista_promedios,opcion)
-    if opcion == "3" or opcion == "4":
+    elif opcion == "3" or opcion == "4":
         mostrar_promedio_anual(lista_promedios,opcion)
 
 def historico_temperatura_humedad():
@@ -186,30 +186,39 @@ def identificar_tormentas(detectados,provincia):
 def analisis_radar(x,y,provincia,ruta_imagen):
     """
     Precondicion: se reciben 4 parámetros, provincia de tipo string que expresa la provincia a analizar,
-                x e y de tipo int que expresan las coordenadas de la provincia y ruta_imagen de tipo string 
-                que expresa la ubicación de la imagen dentro de la computadora. Se analiza cada pixel de la 
+                x e y de tipo int que expresan las coordenadas de la provincia y ruta_imagen de tipo string
+                que expresa la ubicación de la imagen dentro de la computadora. Se analiza cada pixel de la
                 provincia identificando el color de cada uno de ellos y agrupandolos en los diferentes tipos de tormenta
     """
     imagen_radar = Image.open(ruta_imagen).convert('RGB')
-    sin_alerta_proxima = [0,(34,34,34)]
-    tormenta_debil = [0,(51,170,221),(34, 170, 204),(34,153,204),(51,136,187),(51,119,170),(68,102,153),(68,85,136),(51,85,119),(51,68,102)] # azules inferiores
-    tormenta_moderada = [0,(85,238,51),(85,221,51),(68,204,51),(68,187,51),(51,170,34),(51,136,34),(34,119,17),(238,238,68),(221,221,51),(204,204,51),(204,170,34)] # verdes y amarillos
-    tormenta_fuerte = [0,(204,153,34),(221,136,17),(153,102,34),(170,0,17),(204,0,17),(221,51,34),(221,102,34),(153,0,0),(170,34,34),(238,17,51)] # rojos y naranjas
-    posibilidad_granizo = [0,(153,221,204),(136,221,187),(204,0,204),(238,0,238),(221,0,153),(170,0,187),(153,0,153),(204,0,153),(221,0,204),(187,0,102)] # magenta y azules superiores
+    NEGRO = ((34, 34, 34))
+    AZULES_INFERIORES = ((51, 170, 221), (34, 170, 204), (34, 153, 204), (51, 136, 187), (51, 119, 170), (68, 102, 153), (68, 85, 136),(51, 85, 119), (51, 68, 102))
+    VERDES = ((85, 238, 51), (85, 221, 51), (68, 204, 51), (68, 187, 51), (51, 170, 34), (51, 136, 34), (34, 119, 17))
+    AMARILLOS = ((238, 238, 68), (238, 238, 51), (221, 221, 51), (204, 204, 51), (204, 170, 34))
+    ROJOS = ((170, 0, 17), (204, 0, 17), (221, 51, 34), (170, 34, 34), (153, 0, 0), (238, 17, 51))
+    NARANJAS = ((221, 102, 34), (204, 153, 34), (153, 102, 34), (221, 136, 17))
+    MAGENTAS = ((204, 0, 204), (238, 0, 238), (221, 0, 153), (170, 0, 187),(153, 0, 153), (204, 0, 153), (221, 0, 204), (187, 0, 102))
+    AZULES_SUPERIORES = ((153, 221, 204), (136, 221, 187))
+    sin_alerta_proxima = 0
+    tormenta_debil = 0
+    tormenta_moderada = 0
+    tormenta_fuerte = 0
+    posibilidad_granizo = 0
     for j in range(y,y+181):
         for i in range(x,x+181):
             coordenada = i,j
-            if imagen_radar.getpixel(coordenada) in sin_alerta_proxima:
-                sin_alerta_proxima[0] += 1
-            if imagen_radar.getpixel(coordenada) in tormenta_debil:
-                tormenta_debil[0] += 1
-            if imagen_radar.getpixel(coordenada) in tormenta_moderada:
-                tormenta_moderada[0] += 1
-            if imagen_radar.getpixel(coordenada) in tormenta_fuerte:
-                tormenta_fuerte[0] += 1
-            if imagen_radar.getpixel(coordenada) in posibilidad_granizo:
-                posibilidad_granizo[0] += 1
-    detectados = [sin_alerta_proxima[0],tormenta_debil[0],tormenta_moderada[0],tormenta_fuerte[0],posibilidad_granizo[0]]
+            if imagen_radar.getpixel(coordenada) == NEGRO:
+                sin_alerta_proxima += 1
+            elif imagen_radar.getpixel(coordenada) in AZULES_INFERIORES:
+                tormenta_debil += 1
+            elif imagen_radar.getpixel(coordenada) in VERDES or imagen_radar.getpixel(coordenada) in AMARILLOS:
+                tormenta_moderada += 1
+            elif imagen_radar.getpixel(coordenada) in ROJOS or imagen_radar.getpixel(coordenada) in NARANJAS:
+                tormenta_fuerte += 1
+            elif imagen_radar.getpixel(coordenada) in MAGENTAS or imagen_radar.getpixel(coordenada) in AZULES_SUPERIORES:
+                posibilidad_granizo += 1
+
+    detectados = [sin_alerta_proxima,tormenta_debil,tormenta_moderada,tormenta_fuerte,posibilidad_granizo]
     identificar_tormentas(detectados,provincia)
 
 def datos_radar():
@@ -264,6 +273,10 @@ def alertas_local(provincia):
     Precondición: Recibe como parametro una provincia como string.
     Revisa si hay alertas en la provincia actual.
     """
+    if "Tierra del Fuego" in provincia:
+        provincia = 'Tierra del Fuego'
+    elif "Capital Federal" in provincia:
+        provincia = 'Buenos Aires'
     url = "https://ws.smn.gob.ar/alerts/type/AL"
     if abrir_json(url):
         respuesta = requests.get(url)
@@ -344,7 +357,7 @@ def geolocalizador_ip():
         datos = respuesta.getDetails()
         acceso = True
     except Exception:
-        print('\nUPS! Hubo un error al obtener la ubicacion actual.')
+        print('\nUPS! Hubo un error al obtener la ubicación actual.')
         print('Verifique su internet o vuelva a intentar mas tarde.')
         acceso = False
     if acceso:
@@ -358,11 +371,11 @@ def geolocalizador_ip():
 def menu_alertas():
     '''
     Precondicion: Muestra un menu para que el usuario decida que tipo de alerta desea ver.
-                Llama a otras funciones sin parametros
+                Llama a otras funciones sin parámetros
     '''
-    print('\n[1] Alertas a Nivel Nacional\n[2] Alertas en mi geolocalizacion actual')
+    print('\n[1] Alertas a Nivel Nacional\n[2] Alertas en mi geolocalización actual')
     print('[3] Ingresar coordenadas')
-    opcion = input('\nIngrese la opcion que desee realizar (1-3): ')
+    opcion = input('\nIngrese la opción que desee realizar (1-3): ')
     while opcion not in ['1', '2','3']:
         opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-3): ')
     if opcion == '1':
@@ -375,7 +388,7 @@ def menu_alertas():
 def mostrar_pronostico_extendido(dias):
     '''
     Precondicion: Muestra el pronostico extendido para la ciudad pedida por el usuario.
-                Recibe el json de pronosticos como un diccionario.
+                Recibe el json de pronósticos como un diccionario.
     '''
     print('')
     for key, value in dias.items():
@@ -396,6 +409,8 @@ def comparar_nombres(nombre_1, nombre_2):
     Postcondicion: retorna el nombre que se encuentra dentro del diccionario si ambos nombres son iguales, 
                 de no ser así retorna un "No"
     """
+    if nombre_2.lower() == "tierra del fuego":
+        nombre_2 = "Tierra del Fuego, Antártida e Islas del Atlántico Sur"
     nombre_conseguido = 'No'
     nombre_3 = nombre_1.lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
     nombre_4 = nombre_2.lower().replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
@@ -413,7 +428,7 @@ def volver_a_intentar():
     decision = input('\nDesea volver a intentar con otra ciudad? (Si/No): ').lower().replace("í", "i")
     opciones = ['si', 'no', 's', 'n']
     while decision not in opciones:
-        decision = input('Opcion no valida! Vuelva a ingresar. (Si/No): ').lower().replace("í", "i")
+        decision = input('Opción no valida! Vuelva a ingresar. (Si/No): ').lower().replace("í", "i")
     if decision in ['si', 's']:
         intentar = True
     elif decision in ['no', 'n']:
@@ -457,7 +472,7 @@ def volver_o_salir():
     '''
     volver = False
     print('\n[1] Volver a Menu del Clima\n[2] Salir')
-    eleccion = input('Ingrese la opcion que desee (1,2): ')
+    eleccion = input('Ingrese la opción que desee (1,2): ')
     while eleccion not in ['1', '2']:
         eleccion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1,2): ')
     if eleccion == '1':
@@ -473,22 +488,22 @@ def titulo():
     print("  | |/ _ \| '__| '_ ` _ \ / _ \ '_ \| __/ _` |")
     print("  | | (_) | |  | | | | | |  __/ | | | || (_| |")
     print("  \_/\___/|_|  |_| |_| |_|\___|_| |_|\__\__,_|")
+    print("")
 
 def main():
-    titulo()
     programa_corriendo = True
     while programa_corriendo is True:
+        titulo()
         print('\n\nM E N U  D E L  C L I M A')
-        aleratas = '[1] ALERTAS!'
-        print(f'\n\033[31m{aleratas}\033[0m\n[2] Pronostico Extendido\n[3] Analisis de Imagen Radar')
-        print('[4] Historico de temperaturas y humedad de Argentina\n[5] Salir')
-        opcion = input('\nIngrese el numero de la opcion que desee (1-5): ')
+        print(f'\n[1] ALERTAS!\n[2] Pronóstico Extendido\n[3] Análisis de Imagen Radar')
+        print('[4] Histórico de temperaturas y humedad de Argentina\n[5] Salir')
+        opcion = input('\nIngrese el numero de la opción que desee (1-5): ')
         while opcion not in ['1', '2', '3', '4', '5']:
             opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-5): ')
-        print('')
+        os.system('cls')
+        titulo()
         if opcion == '1':
-            aleratas = 'A L E R T A S !'
-            print(f'\n\033[31m{aleratas}\033[0m')
+            print('A L E R T A S !')
             menu_alertas()
             programa_corriendo = volver_o_salir()
         elif opcion == '2':
@@ -505,6 +520,6 @@ def main():
             programa_corriendo = volver_o_salir()
         elif opcion == '5':
             programa_corriendo = False
-
+        os.system('cls')
 
 main()
