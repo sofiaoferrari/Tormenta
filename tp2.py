@@ -68,6 +68,7 @@ def graficar_promedios_anuales(lista_promedios,opcion):
     plt.title(etiquetas[1])
     plt.tight_layout()
     plt.show()
+    os.system('cls')
 
 def mostrar_promedio_anual(lista_promedios,opcion):
     """
@@ -92,6 +93,7 @@ def mostrar_promedio_anual(lista_promedios,opcion):
                 maximo_anio = anio
     print("\n El año",maximo_anio,"tuvo el mayor valor: ",maximo_valor+unidades)
     continuar = input("\nPresione enter para continuar.")
+    os.system('cls')
 
 def guardar_promedios(promedio,anio,lista_promedios):
     """
