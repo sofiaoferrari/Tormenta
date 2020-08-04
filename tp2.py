@@ -399,7 +399,7 @@ def geolocalizador():
                 alertas_local(localizacion["province"])
             elif encontrado == False:
                 print(f"\nNo se encontró la localización para {latitud}, {longitud}.")
-            intentar = volver_a_intentar('coordenada')
+        intentar = volver_a_intentar('coordenada')
 
 def geolocalizador_ip():
     '''
