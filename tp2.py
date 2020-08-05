@@ -20,8 +20,8 @@ def edicion_descripcion(descripcion):
     '''
     texto = list(descripcion)
     for i in range(120, len(descripcion), 120):
-        separacion = [' ', '.', ',']
-        while texto[i] not in separacion:
+        SEPARACION = (' ', '.', ',')
+        while texto[i] not in SEPARACION:
             i += 1
         texto.insert(i+1, '\n')
     texto_final = ''.join(texto)
@@ -60,12 +60,11 @@ def volver_a_intentar(valor):
     '''
     intentar = False
     decision = input(f'\nDesea volver a intentar con otra {valor}? (Si/No): ').lower().replace("í", "i")
-    opciones = ['si', 'no', 's', 'n']
-    while decision not in opciones:
+    while decision not in ('si', 'no', 's', 'n'):
         decision = input('Opción no valida! Vuelva a ingresar. (Si/No): ').lower().replace("í", "i")
-    if decision in ['si', 's']:
+    if decision in ('si', 's'):
         intentar = True
-    elif decision in ['no', 'n']:
+    elif decision in ('no', 'n'):
         intentar = False
     os.system('cls')
     titulo()
@@ -131,7 +130,7 @@ def guardar_promedios(promedio,anio,lista_promedios):
     Recibe el promedio como un float, el año como un string, y la lista de promedios como un diccionario.
     """
     if anio not in lista_promedios.keys():
-        lista_promedios[anio] = [1,promedio]
+        lista_promedios[anio] = [1, promedio]
     else:
         lista_promedios[anio][0] += 1
         lista_promedios[anio][1] += promedio
@@ -143,18 +142,18 @@ def cargar_datos_anuales(opcion,ruta):
     """
     lista_promedios = {}
     titulo = 0
-    with open(ruta) as csvfile:
-        for linea in csvfile:
+    with open(ruta) as archivo_csv:
+        for linea in archivo_csv:
             if titulo != 0: #Porque la primera linea del CSV es el encabezado.
                 linea = linea.split(",")
                 fecha = linea[0].replace('"', '')
                 anio = fecha[-4::1]
                 if opcion == "1":
-                    max = float(linea[4].replace('"',''))
-                    min = float(linea[5].replace('"',''))
+                    max = float(linea[4].replace('"', ''))
+                    min = float(linea[5].replace('"', ''))
                     promedio = (max + min) / 2
                 elif opcion == "2":
-                    promedio = float(linea[8].replace('"',''))
+                    promedio = float(linea[8].replace('"', ''))
                 elif opcion == "3":
                     promedio = float(linea[6].replace('"', ''))
                 elif opcion == "4":
@@ -187,7 +186,7 @@ def historico_temperatura_humedad():
             print("4)   Temperatura máxima de los últimos 5 años.")
             print("5)   Volver.\n")
             opcion = input("Elija que opción desea ver (1-5): ")
-            while opcion not in ["1", "2", "3", "4", "5"]:
+            while opcion not in ("1", "2", "3", "4", "5"):
                 opcion = input("Opción no valida. Vuelva a intentar (1-5): ")
             if opcion != "5":
                 cargar_datos_anuales(opcion,ruta)
@@ -220,7 +219,7 @@ def identificar_tormentas(detectados,provincia):
         if detectados[4] > (detectados[1]*0.29):
             tormenta_actual = "Tormenta fuerte con posibilidad de granizo"
             alerta = "ALERTA!"
-    print("\n",provincia+":",tormenta_actual+".",alerta)
+    print("\n", provincia+":", tormenta_actual+".", alerta)
 
 def analisis_radar(x,y,provincia,ruta_imagen):
     """
@@ -264,15 +263,15 @@ def datos_radar():
     """
     Precondición: Le pide al usuario la ruta de la imagen, y si esta es valida, entra en la función de analisis_radar.
     """
-    bahia_blanca = [336, 339, "Bahia Blanca, Buenos Aires"]
-    caba = [465, 174, "C.A.B.A"]
-    cordoba = [269,43,"Córdoba, Córdoba"]
-    mar_del_plata = [487, 311, "Mar del Plata, Buenos Aires"]
-    neuquen = [145,348,"Neuquén, Neuquén"]
-    parana = [399, 54, "Paraná, Entre Rios"]
-    pergamino = [394,141,"Pergamino, Buenos Aires"]
-    santa_rosa = [276,249,"Santa Rosa, La Pampa"]
-    provincias = [bahia_blanca,caba,cordoba,mar_del_plata,neuquen,parana,pergamino,santa_rosa]
+    BAHIA_BLANCA = (336, 339, "Bahia Blanca, Buenos Aires")
+    CABA = (465, 174, "C.A.B.A")
+    CORDOBA = (269,43, "Córdoba, Córdoba")
+    MAR_DEL_PLATA = (487, 311, "Mar del Plata, Buenos Aires")
+    NEUQUEN = (145,348, "Neuquén, Neuquén")
+    PARANA = (399, 54, "Paraná, Entre Rios")
+    PERGAMINO = (394,141, "Pergamino, Buenos Aires")
+    SANTA_ROSA = (276,249, "Santa Rosa, La Pampa")
+    PROVINCIAS = (BAHIA_BLANCA, CABA, CORDOBA, MAR_DEL_PLATA, NEUQUEN, PARANA, PERGAMINO, SANTA_ROSA)
     intentar = True
     while intentar is True:
         print('\nA N A L I S I S   R A D A R\n')
@@ -284,8 +283,8 @@ def datos_radar():
             titulo()
             print('\nA N A L I S I S   R A D A R\n')
             print('\nA L E R T A S !\n')
-            for i in range(len(provincias)):
-                analisis_radar(provincias[i][0],provincias[i][1],provincias[i][2],ruta_imagen)
+            for i in range(len(PROVINCIAS)):
+                analisis_radar(PROVINCIAS[i][0], PROVINCIAS[i][1], PROVINCIAS[i][2],ruta_imagen)
             print('')
             intentar = False
         elif os.path.exists(ruta_imagen) == False:
@@ -299,18 +298,18 @@ def alertas():
     """
     Precondición: imprime las alertas actuales a nivel nacional.
     """
-    url = "https://ws.smn.gob.ar/alerts/type/AL"
-    if abrir_json(url):
-        respuesta = requests.get(url)
+    URL = "https://ws.smn.gob.ar/alerts/type/AL"
+    if abrir_json(URL):
+        respuesta = requests.get(URL)
         datos = respuesta.json()
-        claves_necesarias = ["Titulo", "Fecha", "Hora", "\nPróxima actualización"]
+        CLAVES_NECESARIAS = ("Titulo", "Fecha", "Hora", "\nPróxima actualización")
         for diccionario in range(len(datos)):
             print("\nAlerta:", diccionario + 1, '\n')
             contador = 0
-            claves = ['title', 'date', 'hour', 'update']
+            CLAVES = ('title', 'date', 'hour', 'update')
             for clave in datos[diccionario]:
-                if clave in claves:
-                    print(claves_necesarias[contador], ":", datos[diccionario][clave])
+                if clave in CLAVES:
+                    print(CLAVES_NECESARIAS[contador], ":", datos[diccionario][clave])
                     contador += 1
                 elif clave == "zones":
                     texto_editado = edicion_descripcion(datos[diccionario-1]['description'])
@@ -319,6 +318,7 @@ def alertas():
                     print("\nZonas: ")
                     for subclave in datos[diccionario]['zones']:
                         print("", int(subclave) + 1, ":", datos[diccionario]['zones'][subclave])
+            print('-'*140)
 
 def alertas_local(provincia):
     """
@@ -330,9 +330,9 @@ def alertas_local(provincia):
         provincia = 'Tierra del Fuego'
     elif "Capital Federal" in provincia:
         provincia = 'Buenos Aires'
-    url = "https://ws.smn.gob.ar/alerts/type/AL"
-    if abrir_json(url):
-        respuesta = requests.get(url)
+    URL = "https://ws.smn.gob.ar/alerts/type/AL"
+    if abrir_json(URL):
+        respuesta = requests.get(URL)
         datos = respuesta.json()
         contador_alertas = 0
         print("Lista de alertas en la provincia", provincia, ":")
@@ -342,6 +342,7 @@ def alertas_local(provincia):
                 print("\nAlerta",contador_alertas)
                 print("\n",datos[i]["title"])
                 print(edicion_descripcion(datos[i]["description"]))
+                print('-' * 140)
         if contador_alertas == 0:
             print(f"\nNo hay ninguna alerta para {provincia} en este momento.")
 
@@ -373,7 +374,7 @@ def geolocalizador():
                 Verifica la conexion con el web service y busca la provincia a la que pertenecen, la cual luego
                 ingresa como parametro en la funcion de alertas locales.
     '''
-    url = 'https://ws.smn.gob.ar/map_items/forecast/'
+    URL = 'https://ws.smn.gob.ar/map_items/forecast/'
     intentar = True
     while intentar is True:
         latitud = input('Ingrese la latitud: ')
@@ -383,8 +384,8 @@ def geolocalizador():
         encontrado = False
         max_lat = 1
         max_lon = 1
-        if abrir_json(url):
-            respuesta = requests.get(url)
+        if abrir_json(URL):
+            respuesta = requests.get(URL)
             datos = respuesta.json()
             for i in range(len(datos)):
                 aprox_latitud = abs(float((datos[i]["lat"]).replace("-", "")) - float(latitud.replace("-", "")))
@@ -406,9 +407,9 @@ def geolocalizador_ip():
     Precondicion: Confirma el acceso a la geolocalizacion actual y llama a la funcion de alertas
                 locales ingresandole como parametro la provincia de la geolocalizacion actual
     '''
-    clave = '3b7428ff5f2a34'
+    CLAVE = '3b7428ff5f2a34'
     try:
-        respuesta = ipinfo.getHandler(clave)
+        respuesta = ipinfo.getHandler(CLAVE)
         datos = respuesta.getDetails()
         acceso = True
     except Exception:
@@ -416,7 +417,7 @@ def geolocalizador_ip():
         print('Verifique su internet o vuelva a intentar mas tarde.')
         acceso = False
     if acceso:
-        respuesta = ipinfo.getHandler(clave)
+        respuesta = ipinfo.getHandler(CLAVE)
         datos = respuesta.getDetails()
         provincia = datos.region
         if 'Buenos Aires' in provincia:
@@ -432,7 +433,7 @@ def menu_alertas():
     print('\n[1] Alertas a Nivel Nacional\n[2] Alertas en mi geolocalización actual')
     print('[3] Ingresar coordenadas\n[4] Volver')
     opcion = input('\nIngrese la opción que desee realizar (1-4): ')
-    while opcion not in ['1', '2', '3', '4']:
+    while opcion not in ('1', '2', '3', '4'):
         opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-4): ')
     os.system('cls')
     titulo()
@@ -487,16 +488,16 @@ def pronostico_extendido():
                 extendido. Confirma el acceso al web service y verifica que haya pronostico
                 para la ubicacion ingresada, llamando a una funcion.
     '''
-    url = 'https://ws.smn.gob.ar/map_items/forecast/'
+    URL = 'https://ws.smn.gob.ar/map_items/forecast/'
     corriendo = True
     while corriendo is True:
         print('\nP R O N O S T I C O    E X T E N D I D O\n')
         ciudad_elegida = input("Ingrese el nombre de la ciudad que desea ver su pronostico extendido: ").title()
         provincia_elegida = input("Ingrese la provincia en la que se encuentra la ciudad: ").title()
         existe_ciudad_y_provincia = False
-        conexion = abrir_json(url)
+        conexion = abrir_json(URL)
         if conexion is True:
-            datos = url
+            datos = URL
             respuesta = requests.get(datos)
             pronosticos = respuesta.json()
             for j in range(len(pronosticos)):
@@ -511,6 +512,7 @@ def pronostico_extendido():
         if existe_ciudad_y_provincia is False and conexion is True:
             print(f'\nLo sentimos! No se encontraron resultados para {ciudad_elegida}, {provincia_elegida}.')
         elif existe_ciudad_y_provincia is True and conexion is True:
+            print('\n' + '-' * 140)
             alertas_local(provincia_encontrada)
         corriendo = volver_a_intentar('ciudad')
 
@@ -522,7 +524,7 @@ def volver_o_salir():
     volver = False
     print('\n[1] Volver a Menu del Clima\n[2] Salir')
     eleccion = input('\nIngrese la opción que desee (1,2): ')
-    while eleccion not in ['1', '2']:
+    while eleccion not in ('1', '2'):
         eleccion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1,2): ')
     if eleccion == '1':
         volver = True
@@ -538,7 +540,7 @@ def main():
         print(f'[1] ALERTAS!\n[2] Pronóstico Extendido\n[3] Análisis de Imagen Radar')
         print('[4] Histórico de temperaturas y humedad de Argentina\n[5] Salir')
         opcion = input('\nIngrese el numero de la opción que desee (1-5): ')
-        while opcion not in ['1', '2', '3', '4', '5']:
+        while opcion not in ('1', '2', '3', '4', '5'):
             opcion = input('Valor Incorrecto! Por favor, vuelva a ingresar (1-5): ')
         os.system('cls')
         titulo()
